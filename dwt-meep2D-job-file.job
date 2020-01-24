@@ -1,0 +1,41 @@
+#!/bin/sh
+#$ -N MYJOBNAME
+#$ -cwd
+#$ -q all.q
+#$ -pe smp 4
+#$ -l mt=10G
+
+pyname=PYNAME
+basename=BASENAME
+
+# define all the file names
+num=${JOB_ID%%.*}
+recordname=fb-${basename}-${num}.txt
+
+
+# register the job
+echo "+++++++++++++++++++++++++++++" >> job.info
+date >> job.info
+echo $JOB_ID  $JOB_NAME $pyname ${recordname} >> job.info
+
+
+# job begin
+echo $JOB_ID $JOB_NAME $pyname ${recordname} > ${recordname}
+date >> ${recordname}
+echo "hello" >> ${recordname}
+echo "===============================" >> ${recordname}
+conda activate pmp
+mpirun -np 4 python3 $pyname >> ${recordname}
+echo "===============================" >> ${recordname}
+date >> ${recordname}
+echo "bye" >> ${recordname}
+
+
+#  cleanup /tmp (if necessary)
+touch job.done
+echo "-----------------------------" >> job.done
+date >> job.done
+echo $JOB_ID  $JOB_NAME $pyname ${recordname} >> job.done
+echo "-----------------------------" >> job.info
+date >> job.info
+echo $JOB_ID  $JOB_NAME $pyname ${recordname} >> job.info

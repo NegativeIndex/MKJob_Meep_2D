@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+for pname in "$@"
+do
+    bname=$(basename "$pname" .py)
+    unumber=`unique-number`
+    jobfile=dwt-$bname.job
+    jobname=dwt-$bname-$unumber
+    directory=$PWD
+
+    cp $HOME/python-study/MKJob_Meep_2D/dwt-meep2D-job-file.job $jobfile
+    echo $pname "==>" $jobfile
+
+    sed -i "s/PYNAME/${pname}/g" $jobfile
+    sed -i "s/BASENAME/${bname}/g" $jobfile
+    sed -i "s%CURRENTDIRECTORY%${directory}%g" $jobfile
+    sed -i "s/MYJOBNAME/${jobname}/g" $jobfile
+
+done
